@@ -69,10 +69,12 @@ export default function ServicesPage() {
 
                 return (
                   <div key={service.id} id={service.id} className="scroll-mt-24">
+                    {index > 0 && (
+                      <hr className="border-t border-border/50 mb-20 md:mb-28 -mt-0" />
+                    )}
                     <div
-                      className={`grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start ${
-                        index % 2 === 1 ? "lg:direction-rtl" : ""
-                      }`}
+                      className={`grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start ${index % 2 === 1 ? "lg:direction-rtl" : ""
+                        }`}
                     >
                       {/* Content */}
                       <div className={index % 2 === 1 ? "lg:order-2" : ""}>
@@ -80,7 +82,7 @@ export default function ServicesPage() {
                           <div className="w-10 h-10 rounded-lg bg-brand-cream flex items-center justify-center">
                             <Icon className="size-5 text-brand-copper" />
                           </div>
-                          <span className="text-sm font-medium tracking-wide uppercase text-brand-copper">
+                          <span className="text-2xl md:text-3xl lg:text-4xl font-medium tracking-wide uppercase text-brand-copper">
                             {service.title}
                           </span>
                         </div>
@@ -104,9 +106,8 @@ export default function ServicesPage() {
 
                       {/* What's included */}
                       <div
-                        className={`rounded-xl border border-border bg-white p-6 md:p-8 ${
-                          index % 2 === 1 ? "lg:order-1" : ""
-                        }`}
+                        className={`rounded-xl border border-border bg-white p-6 md:p-8 ${index % 2 === 1 ? "lg:order-1" : ""
+                          }`}
                       >
                         <h3 className="text-sm font-semibold uppercase tracking-wide text-brand-charcoal mb-5">
                           What&apos;s Included

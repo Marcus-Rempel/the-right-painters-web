@@ -24,16 +24,14 @@ export default function ProcessSteps() {
 
         {/* Steps — horizontal timeline on desktop, stacked on mobile */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
-          {steps.map((step, index) => (
+          {steps.map((step) => (
             <div key={step.number} className="relative group">
-              {/* Connector line (desktop only) */}
-              {index < steps.length - 1 && (
-                <div className="hidden lg:block absolute top-6 left-full w-full h-px bg-border z-0" />
-              )}
+              {/* Connector line: from right edge of circle (symmetric on all steps) */}
+              <div className="block absolute top-6 left-12 right-0 md:-right-8 lg:-right-6 h-px bg-border z-0" />
 
               {/* Step number */}
               <div className="relative z-10 mb-5">
-                <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white text-brand-copper font-mono text-sm font-bold border border-border shadow-sm">
+                <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-brand-cream text-brand-copper font-mono text-sm font-bold border border-border shadow-sm">
                   {step.number}
                 </span>
               </div>

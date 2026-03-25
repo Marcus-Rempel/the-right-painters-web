@@ -1,18 +1,34 @@
 "use client";
 
-import { Phone, Send, CheckCircle } from "lucide-react";
+import { Phone, Send, CheckCircle, AlertCircle } from "lucide-react";
 import { useState } from "react";
 
+import { submitLead } from "@/app/actions/submit-lead";
 import { Button } from "@/components/ui/button";
 import { company, hoursSummary } from "@/data/company";
 import { serviceSelectOptions } from "@/data/services";
 
 export default function FinalCTA() {
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [pending, setPending] = useState(false);
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setSubmitted(true);
+    setError(null);
+    setPending(true);
+
+    const formData = new FormData(e.currentTarget);
+    formData.set("source", "home_cta");
+
+    const result = await submitLead(formData);
+
+    setPending(false);
+    if (result.success) {
+      setSubmitted(true);
+    } else {
+      setError(result.error);
+    }
   }
 
   return (
@@ -89,17 +105,25 @@ export default function FinalCTA() {
                   Tell us about your project and we&apos;ll follow up quickly.
                 </p>
 
+                {error && (
+                  <div className="flex items-center gap-2 p-3 mb-4 rounded-lg bg-red-50 border border-red-200 text-sm text-red-700">
+                    <AlertCircle className="size-4 shrink-0" />
+                    {error}
+                  </div>
+                )}
+
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label
-                        htmlFor="firstName"
+                        htmlFor="cta-firstName"
                         className="text-sm font-medium text-brand-charcoal"
                       >
                         First name
                       </label>
                       <input
-                        id="firstName"
+                        id="cta-firstName"
+                        name="firstName"
                         type="text"
                         required
                         placeholder="Your first name"
@@ -108,13 +132,14 @@ export default function FinalCTA() {
                     </div>
                     <div className="space-y-1.5">
                       <label
-                        htmlFor="lastName"
+                        htmlFor="cta-lastName"
                         className="text-sm font-medium text-brand-charcoal"
                       >
                         Last name
                       </label>
                       <input
-                        id="lastName"
+                        id="cta-lastName"
+                        name="lastName"
                         type="text"
                         required
                         placeholder="Your last name"
@@ -126,13 +151,14 @@ export default function FinalCTA() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label
-                        htmlFor="email"
+                        htmlFor="cta-email"
                         className="text-sm font-medium text-brand-charcoal"
                       >
                         Email
                       </label>
                       <input
-                        id="email"
+                        id="cta-email"
+                        name="email"
                         type="email"
                         required
                         placeholder="you@example.com"
@@ -141,13 +167,14 @@ export default function FinalCTA() {
                     </div>
                     <div className="space-y-1.5">
                       <label
-                        htmlFor="phone"
+                        htmlFor="cta-phone"
                         className="text-sm font-medium text-brand-charcoal"
                       >
                         Phone
                       </label>
                       <input
-                        id="phone"
+                        id="cta-phone"
+                        name="phone"
                         type="tel"
                         placeholder="(423) 555-0000"
                         className="w-full h-11 px-3.5 rounded-lg border border-input bg-background text-sm text-foreground placeholder:text-brand-stone/60 focus:outline-none focus:ring-2 focus:ring-brand-copper/20 focus:border-brand-copper transition-all"
@@ -157,13 +184,14 @@ export default function FinalCTA() {
 
                   <div className="space-y-1.5">
                     <label
-                      htmlFor="service"
+                      htmlFor="cta-service"
                       className="text-sm font-medium text-brand-charcoal"
                     >
                       Service needed
                     </label>
                     <select
-                      id="service"
+                      id="cta-service"
+                      name="service"
                       required
                       className="w-full h-11 px-3.5 rounded-lg border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-copper/20 focus:border-brand-copper transition-all appearance-none"
                     >
@@ -178,7 +206,7 @@ export default function FinalCTA() {
 
                   <div className="space-y-1.5">
                     <label
-                      htmlFor="details"
+                      htmlFor="cta-details"
                       className="text-sm font-medium text-brand-charcoal"
                     >
                       Project details{" "}
@@ -187,7 +215,8 @@ export default function FinalCTA() {
                       </span>
                     </label>
                     <textarea
-                      id="details"
+                      id="cta-details"
+                      name="message"
                       rows={3}
                       placeholder="Tell us about the scope, timeline, or any questions you have..."
                       className="w-full px-3.5 py-2.5 rounded-lg border border-input bg-background text-sm text-foreground placeholder:text-brand-stone/60 focus:outline-none focus:ring-2 focus:ring-brand-copper/20 focus:border-brand-copper transition-all resize-none"
@@ -196,10 +225,11 @@ export default function FinalCTA() {
 
                   <Button
                     type="submit"
-                    className="w-full bg-brand-copper text-white hover:bg-brand-copper-light h-12 rounded-lg text-base font-medium transition-all duration-200 active:scale-[0.98] shadow-[0_4px_20px_-4px_rgba(180,83,9,0.3)] mt-2"
+                    disabled={pending}
+                    className="w-full bg-brand-copper text-white hover:bg-brand-copper-light h-12 rounded-lg text-base font-medium transition-all duration-200 active:scale-[0.98] shadow-[0_4px_20px_-4px_rgba(180,83,9,0.3)] mt-2 disabled:opacity-60"
                   >
                     <Send className="size-4 mr-2" />
-                    Send Estimate Request
+                    {pending ? "Sending…" : "Send Estimate Request"}
                   </Button>
                 </form>
               </>
